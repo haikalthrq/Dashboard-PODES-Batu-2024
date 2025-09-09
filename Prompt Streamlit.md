@@ -1,81 +1,78 @@
 # Prompt untuk AI Developer
 
 ## Peran Anda:
-Anda adalah seorang data scientist dan pengembang Python ahli dengan spesialisasi dalam membangun aplikasi data interaktif menggunakan Streamlit. Anda sangat teliti dalam merancang struktur aplikasi yang bersih dan mudah dikelola.
+Anda adalah seorang Pengembang Python ahli dengan spesialisasi dalam pembuatan aplikasi data interaktif menggunakan Streamlit dan Pandas. Anda memiliki pemahaman mendalam tentang prinsip-prinsip UI/UX untuk menciptakan dasbor yang tidak hanya fungsional, tetapi juga profesional, intuitif, dan mudah digunakan oleh para pemangku kepentingan di level pemerintahan.
 
-## Tujuan Utama:
-Membangun sebuah aplikasi dashboard Streamlit fungsional sebagai prototipe untuk memvisualisasikan data Potensi Desa (Podes) 2024 Kota Batu. Aplikasi ini harus interaktif, informatif, dan sesuai dengan semua persyaratan yang diuraikan di bawah ini.
+## Tujuan Proyek:
+Tugas Anda adalah membangun sebuah prototipe aplikasi web fungsional dan rapi menggunakan Streamlit. Aplikasi ini berfungsi sebagai dasbor interaktif untuk menganalisis Data Potensi Desa (Podes) 2024 untuk wilayah Kota Batu, yang akan digunakan sebagai alat bantu pengambilan kebijakan berbasis data.
 
-## 1. Konteks Proyek
-Aplikasi ini ditujukan untuk Pemerintah Kota Batu sebagai alat bantu analisis dan pengambilan kebijakan. Data yang digunakan adalah hasil survei Podes 2024 yang sudah melalui proses pembersihan. Desain dashboard berfokus pada transparansi, perbandingan langsung antar desa, dan analisis berbasis data faktual tanpa menggunakan skor agregat.
+## Struktur Proyek
+Untuk memastikan kemudahan pemeliharaan dan skalabilitas, gunakan struktur file dan folder modular berikut:
 
-## 2. Aset yang Disediakan
-Anda akan bekerja dengan satu file data utama:
-
-**data_podes_2024.json**: Ini adalah file JSON yang berisi array dari objek. Setiap objek mewakili satu desa dan memiliki struktur sebagai berikut:
-
-- **Identitas**: `IDDESA`, `NAMA_KEC`, `NAMA_DESA`.
-- **Data Kuantitatif**: `jumlah_tk`, `jumlah_sd`, `jumlah_smp`, `jumlah_sma`, `jumlah_rs`, `jumlah_puskesmas_inap`, `jumlah_puskesmas`.
-- **Data Kualitatif (Label)**: `label_mitigasi_dini`, `label_mitigasi_alat`, `label_mitigasi_rambu`, `label_internet`, `label_sinyal_internet`, `label_angkutan_umum`.
-
-## 3. Struktur File dan Folder Aplikasi
-Untuk memastikan aplikasi mudah dikelola, gunakan struktur berikut:
-
-dashboard-podes/
-├── 📄 app.py # File utama aplikasi Streamlit
+dashboard_podes_batu/
+├── 📄 app.py # Skrip utama yang mengatur halaman
 ├── 📁 data/
 │ └── 📄 data_podes_2024.json
 ├── 📁 modules/
-│ ├── 📄 ui_components.py # Fungsi untuk membuat filter atau komponen UI
-│ └── 📄 data_loader.py # Fungsi untuk memuat dan cache data
-└── 📄 requirements.txt # Daftar library yang dibutuhkan (streamlit, pandas)
+│ ├── 📄 data_loader.py # Fungsi untuk memuat dan cache data
+│ ├── 📄 ui_components.py # Fungsi untuk membangun elemen UI (sidebar, judul, kartu KPI)
+│ └── 📄 analysis.py # Fungsi untuk analisis (perbandingan, filtering)
+├── 📁 pages/
+│ └── 📄 1_Dashboard_Analisis.py # Halaman utama dashboard
+└── 📄 requirements.txt # Daftar library (streamlit, pandas)
 
 
-## 4. Persyaratan Fungsional Aplikasi
+## Sumber Data
+Gunakan file `data/data_podes_2024.json` sebagai satu-satunya sumber data. Strukturnya adalah sebuah array JSON di mana setiap objek mewakili satu desa. Semua kunci dan nilai kategori di dalamnya sudah deskriptif dan siap pakai.
 
-### A. Tata Letak (Layout)
-Gunakan layout wide (`st.set_page_config(layout="wide")`).
+## Desain & Alur Pengguna (UI/UX)
+Aplikasi ini akan berjalan sebagai aplikasi multi-halaman Streamlit.
 
-Aplikasi harus memiliki **Sidebar** di sebelah kiri yang berfungsi sebagai Panel Kontrol utama untuk semua filter.
+### 1. Halaman Muka (`app.py`)
+Ini adalah landing page yang profesional dan rapi.
 
-Area utama di sebelah kanan akan menampilkan **visualisasi data** yang berubah secara dinamis.
+**Layout**: Gunakan `st.columns` untuk menciptakan tata letak yang seimbang (misalnya, teks di satu sisi, gambar/logo di sisi lain).
 
-### B. Panel Kontrol (di dalam Sidebar)
-Buat filter-filter berikut di dalam `st.sidebar`:
+**Konten**:
 
-- **Filter Kategori Utama**: Sebuah selectbox untuk memilih kategori analisis:
+- **Judul Utama**: "Dashboard Interaktif Potensi Desa Kota Batu".
+- **Subjudul**: "Analisis Data Podes 2024 untuk Perencanaan Berbasis Bukti".
+- **Deskripsi**: Tampilkan teks ringkas yang menjelaskan tujuan dasbor, sumber data (BPS), dan manfaatnya. Gunakan bahasa yang formal dan profesional.
+- **Call to Action**: Sediakan sebuah tombol `st.button` yang jelas, misalnya [Jelajahi Dashboard], yang akan mengarahkan pengguna ke halaman "Dashboard Analisis".
+
+### 2. Halaman Dashboard Analisis (`pages/1_Dashboard_Analisis.py`)
+Ini adalah halaman inti aplikasi.
+
+#### A. Panel Kontrol (Sidebar)
+Gunakan `st.sidebar` untuk semua kontrol interaktif:
+
+- **Filter Kategori Utama**: Sebuah `st.selectbox` untuk memilih salah satu dari empat kategori utama:
   - Pendidikan
   - Kesehatan
-  - Bencana & Lingkungan
-  - Ekonomi & Konektivitas
+  - Infrastruktur & Konektivitas
+  - Lingkungan & Kebencanaan
 
-- **Filter Indikator Dinamis**: Sebuah selectbox yang isinya berubah sesuai dengan Kategori Utama yang dipilih.
-  - Jika Kategori = Pendidikan, maka pilihan indikatornya adalah `Jumlah TK`, `Jumlah SD`, dll.
-  - Jika Kategori = Bencana & Lingkungan, maka pilihan indikatornya adalah `Sistem Peringatan Dini`, `Alat Keselamatan`, dll.
+- **Filter Indikator Spesifik**: Sebuah `st.selectbox` yang isinya berubah secara dinamis berdasarkan pilihan Kategori Utama. Daftar indikator untuk setiap kategori harus sesuai dengan yang telah didefinisikan sebelumnya (contoh: jika Kategori="Pendidikan", maka Indikator="Jumlah TK", "Jumlah SD", dst.).
 
 - **Filter Lokasi**:
-  - Sebuah selectbox untuk memilih Kecamatan. Opsi harus menyertakan "Semua Kecamatan".
-  - Sebuah multiselect untuk memilih Desa tertentu, yang opsinya disesuaikan berdasarkan Kecamatan yang dipilih.
+  - `st.selectbox` untuk Kecamatan, dengan opsi "Semua Kecamatan".
+  - `st.multiselect` untuk Desa/Kelurahan, memungkinkan pengguna memilih beberapa desa sekaligus untuk fitur perbandingan.
 
-### C. Area Visualisasi Utama
-Area ini harus menampilkan konten yang relevan berdasarkan filter yang aktif.
+- **Tombol Reset**: Sebuah `st.button("Reset Filter")` untuk mengembalikan semua pilihan ke kondisi awal.
 
-- **Judul Dinamis**: Tampilkan judul yang mencerminkan filter yang sedang dipilih (misalnya, "Data Pendidikan di Kecamatan Batu").
-  
-- **Sistem Peringkat (Tanpa Skor)**:
-  - Tampilkan data yang sudah difilter dalam bentuk tabel interaktif (`st.dataframe`).
-  - Fitur ranking diwujudkan dengan kemampuan pengguna untuk mengurutkan (sort) tabel dengan mengklik judul kolom. Misalnya, mengklik kolom "jumlah_sma" akan mengurutkan desa dari yang memiliki SMA terbanyak ke yang paling sedikit. Ini adalah cara me-ranking tanpa skor.
+#### B. Area Konten Utama
+- **Judul Dinamis**: Tampilkan judul yang berubah sesuai filter, misalnya: `st.header("Analisis Pendidikan: Jumlah SMA di Kecamatan Batu")`.
 
-- **Mode Perbandingan Desa**:
-  - Di atas tabel, sediakan sebuah `st.multiselect` yang memungkinkan pengguna memilih dua atau lebih desa dari data yang ditampilkan.
-  - Jika lebih dari satu desa dipilih, tampilkan sebuah bagian baru di bawahnya yang berisi perbandingan data side-by-side untuk desa-desa tersebut. Gunakan `st.metric` atau `st.bar_chart` untuk menampilkan perbandingan setiap indikator relevan.
+- **Kartu KPI Agregat**: Sebelum tabel, tampilkan 3-4 ringkasan data teratas menggunakan `st.columns` dan `st.metric`.
+  - Jika indikatornya kuantitatif (misal: jumlah_sma), tampilkan: Total se-Kota Batu, Rata-rata per Desa, dan Desa dengan Nilai Tertinggi.
+  - Jika indikatornya kualitatif (misal: status_peringatan_dini), tampilkan: Jumlah Desa dengan 'Ada', Jumlah Desa dengan 'Tidak Ada', dan Persentase Desa dengan 'Ada'.
 
-## 5. Catatan Penting & Batasan
+- **Tabel Peringkat Interaktif**:
+  - Tampilkan `st.dataframe` yang berisi data desa yang telah difilter.
+  - **Sistem Peringkat**: Pengguna dapat mengklik judul kolom pada tabel untuk mengurutkan data (ascending/descending). Inilah yang berfungsi sebagai sistem perankingan manual berbasis indikator tunggal, sesuai dengan permintaan.
 
-- **Tanpa Skor**: Aplikasi ini tidak boleh menghitung, menggunakan, atau menampilkan skor komposit apa pun. Semua analisis harus didasarkan pada data kuantitatif dan kualitatif yang ada di file JSON.
-  
-- **Tanpa Peta Heatmap**: Visualisasi peta dalam bentuk heatmap tidak akan diimplementasikan dalam prototipe Streamlit ini. Fitur peta adalah untuk pengembangan di tahap selanjutnya dan tidak termasuk dalam lingkup tugas ini.
-
-- **Kode Berkualitas**: Tulis kode yang bersih, modular, dan beri komentar jika diperlukan. Gunakan fungsi-fungsi di dalam direktori `modules/` untuk menjaga `app.py` tetap rapi.
-
-- **Caching Data**: Gunakan dekorator `@st.cache_data` untuk fungsi pemuatan data agar performa aplikasi cepat.
+- **Fitur Perbandingan Desa**:
+  - Fitur ini aktif jika pengguna memilih 2 atau 3 desa di filter multiselect Desa.
+  - Tampilkan sub-header "Perbandingan Desa".
+  - Gunakan `st.columns` untuk menampilkan data dari desa-desa yang dipilih secara berdampingan.
+  - Sajikan perbandingan menggunakan `st.metric` atau `st.bar_chart` sederhana untuk setiap indikator relevan dalam kategori yang dipilih.

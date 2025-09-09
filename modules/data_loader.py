@@ -27,7 +27,7 @@ def load_podes_data() -> pd.DataFrame:
         # Ensure numeric columns are properly typed
         numeric_columns = [
             'jumlah_tk', 'jumlah_sd', 'jumlah_smp', 'jumlah_sma',
-            'jumlah_rs', 'jumlah_puskesmas_inap', 'jumlah_puskesmas'
+            'jumlah_rs', 'jumlah_puskesmas'
         ]
         
         for col in numeric_columns:
@@ -45,7 +45,7 @@ def load_podes_data() -> pd.DataFrame:
 
 def get_category_indicators() -> Dict[str, Dict[str, str]]:
     """
-    Define indicator mapping for each category
+    Define indicator mapping for each category (Updated structure)
     
     Returns:
         Dict: Mapping of categories to their indicators
@@ -59,17 +59,22 @@ def get_category_indicators() -> Dict[str, Dict[str, str]]:
         },
         "Kesehatan": {
             "jumlah_rs": "Jumlah Rumah Sakit",
-            "jumlah_puskesmas_inap": "Jumlah Puskesmas Rawat Inap",
             "jumlah_puskesmas": "Jumlah Puskesmas"
         },
-        "Bencana & Lingkungan": {
-            "label_mitigasi_dini": "Sistem Peringatan Dini",
-            "label_mitigasi_alat": "Alat Keselamatan",
-            "label_mitigasi_rambu": "Rambu Keselamatan"
+        "Infrastruktur & Konektivitas": {
+            "kekuatan_sinyal": "Kualitas Sinyal Internet",
+            "jenis_sinyal_internet": "Jenis Sinyal Internet"
         },
-        "Ekonomi & Konektivitas": {
-            "label_sinyal_internet": "Kualitas Sinyal Internet",
-            "label_angkutan_umum": "Ketersediaan Angkutan Umum"
+        "Lingkungan & Kebencanaan": {
+            "status_peringatan_dini": "Sistem Peringatan Dini",
+            "status_alat_keselamatan": "Alat Keselamatan",
+            "status_rambu_evakuasi": "Rambu Keselamatan",
+            "status_tps": "Tempat Penampungan Sampah (TPS)",
+            "status_tps3r": "Tempat Penampungan Sampah 3R (TPS3R)",
+            "status_dilakukan_pemilahan_sampah": "Pemilahan Sampah",
+            "kebiasaan_pemilahan_sampah": "Kebiasaan Pemilahan Sampah",
+            "warga_terlibat_olah_sampah": "Partisipasi Warga Pengolahan Sampah",
+            "status_buang_sampah_dibakar": "Status Pembakaran Sampah"
         }
     }
 
@@ -87,7 +92,7 @@ def get_kecamatan_list(df: pd.DataFrame) -> List[str]:
     if df.empty:
         return []
     
-    kecamatan_list = ["Semua Kecamatan"] + sorted(df['NAMA_KEC'].unique().tolist())
+    kecamatan_list = ["Semua Kecamatan"] + sorted(df['nama_kecamatan'].unique().tolist())
     return kecamatan_list
 
 
@@ -106,10 +111,10 @@ def get_desa_list(df: pd.DataFrame, selected_kecamatan: str) -> List[str]:
         return []
     
     if selected_kecamatan == "Semua Kecamatan":
-        return sorted(df['NAMA_DESA'].unique().tolist())
+        return sorted(df['nama_desa'].unique().tolist())
     else:
-        filtered_df = df[df['NAMA_KEC'] == selected_kecamatan]
-        return sorted(filtered_df['NAMA_DESA'].unique().tolist())
+        filtered_df = df[df['nama_kecamatan'] == selected_kecamatan]
+        return sorted(filtered_df['nama_desa'].unique().tolist())
 
 
 def filter_data(df: pd.DataFrame, 
@@ -135,14 +140,14 @@ def filter_data(df: pd.DataFrame,
     
     # Filter by kecamatan
     if selected_kecamatan != "Semua Kecamatan":
-        filtered_df = filtered_df[filtered_df['NAMA_KEC'] == selected_kecamatan]
+        filtered_df = filtered_df[filtered_df['nama_kecamatan'] == selected_kecamatan]
     
     # Filter by desa
     if selected_desa:
-        filtered_df = filtered_df[filtered_df['NAMA_DESA'].isin(selected_desa)]
+        filtered_df = filtered_df[filtered_df['nama_desa'].isin(selected_desa)]
     
     # Select relevant columns
-    base_columns = ['IDDESA', 'NAMA_KEC', 'NAMA_DESA']
+    base_columns = ['id_desa', 'nama_kecamatan', 'nama_desa']
     columns_to_show = base_columns + selected_indicators
     
     # Ensure all columns exist in the dataframe

@@ -132,29 +132,28 @@ def display_data_table(filtered_df: pd.DataFrame,
     
     # Rename columns to more readable format
     column_mapping = {
-        'NAMA_KEC': 'Kecamatan',
-        'NAMA_DESA': 'Desa',
+        'nama_kecamatan': 'Kecamatan',
+        'nama_desa': 'Desa',
         'jumlah_tk': 'Jumlah TK',
         'jumlah_sd': 'Jumlah SD',
         'jumlah_smp': 'Jumlah SMP', 
         'jumlah_sma': 'Jumlah SMA',
         'jumlah_rs': 'Jumlah RS',
-        'jumlah_puskesmas_inap': 'Jumlah Puskesmas Rawat Inap',
         'jumlah_puskesmas': 'Jumlah Puskesmas',
-        'label_mitigasi_dini': 'Sistem Peringatan Dini',
-        'label_mitigasi_alat': 'Alat Keselamatan',
-        'label_mitigasi_rambu': 'Rambu Keselamatan',
-        'label_sinyal_internet': 'Kualitas Sinyal Internet',
-        'label_angkutan_umum': 'Ketersediaan Angkutan Umum'
+        'status_peringatan_dini': 'Sistem Peringatan Dini',
+        'status_alat_keselamatan': 'Alat Keselamatan',
+        'status_rambu_evakuasi': 'Rambu Keselamatan',
+        'kekuatan_sinyal': 'Kualitas Sinyal Internet',
+        'jenis_sinyal_internet': 'Jenis Sinyal Internet'
     }
     
     # Only rename columns that exist in the dataframe
     existing_mappings = {k: v for k, v in column_mapping.items() if k in display_df.columns}
     display_df = display_df.rename(columns=existing_mappings)
     
-    # Remove IDDESA for display
-    if 'IDDESA' in display_df.columns:
-        display_df = display_df.drop('IDDESA', axis=1)
+    # Remove id_desa for display
+    if 'id_desa' in display_df.columns:
+        display_df = display_df.drop('id_desa', axis=1)
     
     st.subheader("📋 Tabel Data Interaktif")
     st.info("💡 Klik pada header kolom untuk mengurutkan data (ranking otomatis)")
@@ -201,7 +200,7 @@ def create_village_comparison(filtered_df: pd.DataFrame,
     st.subheader("🔍 Mode Perbandingan Desa")
     
     # Village selector for comparison
-    village_options = filtered_df['NAMA_DESA'].tolist()
+    village_options = filtered_df['nama_desa'].tolist()
     selected_villages = st.multiselect(
         "Pilih desa untuk dibandingkan (minimal 2):",
         village_options,
@@ -209,7 +208,7 @@ def create_village_comparison(filtered_df: pd.DataFrame,
     )
     
     if len(selected_villages) >= 2:
-        comparison_df = filtered_df[filtered_df['NAMA_DESA'].isin(selected_villages)]
+        comparison_df = filtered_df[filtered_df['nama_desa'].isin(selected_villages)]
         
         st.write(f"**Perbandingan {len(selected_villages)} Desa:**")
         
@@ -217,11 +216,11 @@ def create_village_comparison(filtered_df: pd.DataFrame,
         cols = st.columns(len(selected_villages))
         
         for idx, village in enumerate(selected_villages):
-            village_data = comparison_df[comparison_df['NAMA_DESA'] == village].iloc[0]
+            village_data = comparison_df[comparison_df['nama_desa'] == village].iloc[0]
             
             with cols[idx]:
                 st.write(f"**{village}**")
-                st.write(f"*Kecamatan: {village_data['NAMA_KEC']}*")
+                st.write(f"*Kecamatan: {village_data['nama_kecamatan']}*")
                 
                 # Display metrics for each indicator
                 for indicator_key in indicator_columns:
@@ -265,14 +264,14 @@ def create_village_comparison(filtered_df: pd.DataFrame,
                 chart_indicator = numeric_indicators[0]
             
             # Create bar chart
-            chart_data = comparison_df[['NAMA_DESA', chart_indicator]].copy()
+            chart_data = comparison_df[['nama_desa', chart_indicator]].copy()
             
             fig = px.bar(
                 chart_data,
-                x='NAMA_DESA',
+                x='nama_desa',
                 y=chart_indicator,
                 title=f"Perbandingan {category_indicators.get(next(iter(category_indicators.keys())), {}).get(chart_indicator, chart_indicator)}",
-                labels={'NAMA_DESA': 'Desa', chart_indicator: 'Jumlah'}
+                labels={'nama_desa': 'Desa', chart_indicator: 'Jumlah'}
             )
             
             fig.update_layout(
@@ -320,12 +319,12 @@ def display_data_insights(filtered_df: pd.DataFrame,
             # Show top 5 villages for this indicator
             if len(filtered_df) > 1:
                 st.write("**Top 5 Desa dengan nilai tertinggi:**")
-                top_villages = filtered_df.nlargest(5, selected_indicator_key)[['NAMA_DESA', 'NAMA_KEC', selected_indicator_key]]
+                top_villages = filtered_df.nlargest(5, selected_indicator_key)[['nama_desa', 'nama_kecamatan', selected_indicator_key]]
                 
                 # Rename columns for display
                 display_cols = {
-                    'NAMA_DESA': 'Desa',
-                    'NAMA_KEC': 'Kecamatan',
+                    'nama_desa': 'Desa',
+                    'nama_kecamatan': 'Kecamatan',
                     selected_indicator_key: selected_indicator_key.replace('_', ' ').title()
                 }
                 top_villages = top_villages.rename(columns=display_cols)
