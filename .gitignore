@@ -3,6 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Debug and temporary files
+debug_*.py
+temp_*.py
+*.tmp
+*.log
+
+# Documentation folder (local only)
+docs/
+
 # C extensions
 *.so
 

@@ -105,16 +105,19 @@ def get_desa_list(df: pd.DataFrame, selected_kecamatan: str) -> List[str]:
         selected_kecamatan: Selected kecamatan name
         
     Returns:
-        List[str]: List of desa names
+        List[str]: List of desa names with "Semua Desa/Kelurahan" option
     """
     if df.empty:
-        return []
+        return ["Semua Desa/Kelurahan"]
     
     if selected_kecamatan == "Semua Kecamatan":
-        return sorted(df['nama_desa'].unique().tolist())
+        desa_list = sorted(df['nama_desa'].unique().tolist())
     else:
         filtered_df = df[df['nama_kecamatan'] == selected_kecamatan]
-        return sorted(filtered_df['nama_desa'].unique().tolist())
+        desa_list = sorted(filtered_df['nama_desa'].unique().tolist())
+    
+    # Add "Semua Desa/Kelurahan" option at the beginning
+    return ["Semua Desa/Kelurahan"] + desa_list
 
 
 def filter_data(df: pd.DataFrame, 

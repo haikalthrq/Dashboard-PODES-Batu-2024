@@ -1,52 +1,175 @@
-# 🏘️ Dashboard Podes 2024 - Kota Batu
+# 🏘️ Dashboard PODES 2024 - Kota Batu
 
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
 ![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
 
-Aplikasi dashboard interaktif untuk memvisualisasikan data **Potensi Desa (Podes) 2024** Kota Batu. Dashboard ini dirancang khusus untuk mendukung Pemerintah Kota Batu dalam analisis data dan pengambilan kebijakan berbasis data faktual.
+Dashboard interaktif untuk memvisualisasikan data **Potensi Desa (PODES) 2024** Kota Batu. Dirancang khusus untuk mendukung pemerintah daerah dan masyarakat umum dalam analisis data tingkat desa secara mudah dan komprehensif.
 
 ## 📋 Daftar Isi
 
-- [Fitur Utama](#-fitur-utama)
-- [Screenshot](#-screenshot)
-- [Instalasi](#-instalasi)
-- [Cara Penggunaan](#-cara-penggunaan)
-- [Struktur Data](#-struktur-data)
-- [Struktur Proyek](#-struktur-proyek)
-- [Teknologi](#-teknologi)
-- [Kontribusi](#-kontribusi)
-- [Lisensi](#-lisensi)
+- [🌟 Fitur Utama](#-fitur-utama)
+- [🚀 Instalasi & Penggunaan](#-instalasi--penggunaan)
+- [📁 Struktur Proyek](#-struktur-proyek)
+- [📊 Kategori Data](#-kategori-data)
+- [🔧 Teknologi](#-teknologi)
+- [📖 Dokumentasi](#-dokumentasi)
+- [🤝 Kontribusi](#-kontribusi)
 
-## ✨ Fitur Utama
+## 🌟 Fitur Utama
 
-### 🎛️ Panel Kontrol Dinamis
-- **Filter Kategori**: Pendidikan, Kesehatan, Bencana & Lingkungan, Ekonomi & Konektivitas
-- **Filter Indikator**: Dinamis berdasarkan kategori yang dipilih
-- **Filter Lokasi**: Pilihan kecamatan dan desa yang dapat dikustomisasi
+### 🎛️ Dashboard Analisis Interaktif
+- **Filter Multi-Level**: Kategori → Indikator → Lokasi
+- **Visualisasi Real-time**: Grafik dan tabel yang update otomatis
+- **Ranking Otomatis**: Urutan performa desa per indikator
+- **Statistik Kunci**: Nilai tertinggi, terendah, dan total
 
-### 📊 Visualisasi Data
-- **Tabel Interaktif**: Ranking otomatis dengan klik header kolom
-- **Mode Perbandingan**: Perbandingan side-by-side antar desa
-- **Insight Statistik**: Analisis mendalam dengan grafik interaktif
-- **Responsif**: Layout yang optimal untuk berbagai ukuran layar
+### 📊 Visualisasi Enhanced
+- **Grafik Ranking**: Bar chart horizontal dengan performa terbaik
+- **Distribusi Data**: Histogram untuk analisis sebaran
+- **Tabel Lengkap**: Data komprehensif dengan filtering
+- **Insights Otomatis**: Analisis performa dan rekomendasi
 
-### 🔍 Analisis Mendalam
-- Statistik deskriptif (rata-rata, median, maksimum, minimum)
-- Top 5 ranking untuk setiap indikator
-- Distribusi data untuk variabel kategorikal
-- Grafik perbandingan yang dapat dikustomisasi
+### 🎯 Fokus User-Friendly
+- **Interface Sederhana**: Desain bersih tanpa kompleksitas berlebih
+- **Responsif**: Optimal untuk desktop dan mobile
+- **Loading Cepat**: Optimasi performa untuk pengalaman lancar
+- **Accessible**: Mudah dipahami untuk semua kalangan
 
-## 📸 Screenshot
+## 🚀 Instalasi & Penggunaan
 
-> *Screenshot akan ditambahkan setelah deployment*
+### Instalasi Cepat
 
-## 🚀 Instalasi
+```bash
+# Clone repository
+git clone https://github.com/haikalthrq/Dashboard-PODES-Batu-2024.git
+cd Dashboard-PODES-Batu-2024
 
-### Prasyarat
-- Python 3.8 atau lebih baru
-- pip (Python package installer)
+# Install dependencies
+pip install -r requirements.txt
+
+# Jalankan aplikasi
+streamlit run app.py
+```
+
+### Akses Dashboard
+- **Local**: http://localhost:8501
+- **Network**: Akan ditampilkan di terminal setelah menjalankan
+
+## 📁 Struktur Proyek
+
+```
+dashboard_podes/
+├── 📄 app.py                 # Entry point aplikasi
+├── 📄 enhanced_viz.py        # Fungsi visualisasi enhanced
+├── 📄 requirements.txt       # Dependencies Python
+├── 📄 README.md             # Dokumentasi utama
+├── 📄 .gitignore            # Git ignore rules
+│
+├── 📁 data/                 # Data dan pemrosesan
+│   ├── data_podes_2024.json # Data utama PODES 2024
+│   ├── cleaned_podes_data.csv # Data terproses
+│   └── ProsesData.py        # Script preprocessing
+│
+├── 📁 modules/              # Modul aplikasi
+│   ├── __init__.py          # Package initializer
+│   ├── analysis.py          # Analisis data & KPI
+│   ├── data_loader.py       # Loading & preprocessing
+│   └── ui_components.py     # Komponen UI
+│
+├── 📁 pages/                # Halaman Streamlit
+│   └── 1_Dashboard_Analisis.py # Dashboard utama
+│
+└── 📁 docs/                 # Dokumentasi
+    ├── Documentation.md     # Dokumentasi teknis
+    ├── Prompt Revisi.md     # Log revisi
+    ├── Prompt Streamlit.md  # Panduan Streamlit
+    └── REVISION_SUMMARY.md  # Ringkasan perubahan
+```
+
+## 📊 Kategori Data
+
+### 🎓 Pendidikan
+- Ketersediaan PAUD, TK, SD, SMP, SMA/SMK
+- Ketersediaan perpustakaan dan fasilitas keterampilan
+
+### 🏥 Kesehatan  
+- Fasilitas kesehatan (Rumah Sakit, Puskesmas, Poskesdes)
+- Tenaga kesehatan dan apotek/toko obat
+
+### 🌍 Bencana & Lingkungan
+- Jenis bencana yang pernah terjadi
+- Upaya mitigasi dan kesiapsiagaan
+
+### 💼 Ekonomi & Konektivitas
+- Ketersediaan bank dan lembaga keuangan
+- Infrastruktur transportasi dan telekomunikasi
+- Fasilitas perdagangan dan pasar
+
+## � Teknologi
+
+| Komponen | Teknologi | Versi |
+|----------|-----------|-------|
+| **Frontend** | Streamlit | ^1.28.0 |
+| **Data Processing** | Pandas | ^2.0.0 |
+| **Visualisasi** | Plotly | ^5.15.0 |
+| **Backend** | Python | ^3.8 |
+
+### Dependencies Utama
+```python
+streamlit>=1.28.0
+pandas>=2.0.0
+plotly>=5.15.0
+numpy>=1.24.0
+```
+
+## 📖 Dokumentasi
+
+### Dokumentasi Teknis
+- 📋 **[Documentation.md](docs/Documentation.md)** - Dokumentasi lengkap fitur dan implementasi
+- 📝 **[REVISION_SUMMARY.md](docs/REVISION_SUMMARY.md)** - Log perubahan dan update
+
+### Panduan Pengembangan  
+- 🔧 **[Prompt Streamlit.md](docs/Prompt%20Streamlit.md)** - Panduan development dengan Streamlit
+- 📊 **[Prompt Revisi.md](docs/Prompt%20Revisi.md)** - History request dan perubahan
+
+## 🤝 Kontribusi
+
+### Cara Berkontribusi
+1. **Fork** repository ini
+2. **Buat branch** untuk fitur baru (`git checkout -b feature/AmazingFeature`)
+3. **Commit** perubahan (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** ke branch (`git push origin feature/AmazingFeature`)
+5. **Buat Pull Request**
+
+### Pedoman Kontribusi
+- ✅ Ikuti standar koding Python (PEP 8)
+- ✅ Tambahkan dokumentasi untuk fitur baru
+- ✅ Test perubahan sebelum submit PR
+- ✅ Update README jika diperlukan
+
+## 📄 Lisensi
+
+Proyek ini menggunakan lisensi MIT. Lihat file `LICENSE` untuk detail lengkap.
+
+---
+
+## � Kontak & Support
+
+**Pengembang**: BPS Kota Batu - Tim PKL  
+**Tahun**: 2024  
+**Update Terakhir**: September 2024
+
+### 🔄 Status Proyek
+- ✅ **Core Features**: Complete
+- ✅ **Documentation**: Complete  
+- ✅ **Testing**: Complete
+- 🚀 **Production Ready**: Yes
+
+---
+
+**⭐ Jika proyek ini membantu, berikan star untuk mendukung pengembangan!**
 
 ### Langkah Instalasi
 

@@ -303,17 +303,15 @@ def display_data_insights(filtered_df: pd.DataFrame,
     # Basic statistics for numeric indicators
     if selected_indicator_key in filtered_df.columns:
         if pd.api.types.is_numeric_dtype(filtered_df[selected_indicator_key]):
-            col1, col2, col3, col4 = st.columns(4)
+            col1, col2, col3 = st.columns(3)
             
             data_series = filtered_df[selected_indicator_key]
             
             with col1:
-                st.metric("Rata-rata", f"{data_series.mean():.1f}")
-            with col2:
                 st.metric("Maksimum", int(data_series.max()))
-            with col3:
+            with col2:
                 st.metric("Minimum", int(data_series.min()))
-            with col4:
+            with col3:
                 st.metric("Median", f"{data_series.median():.1f}")
             
             # Show top 5 villages for this indicator

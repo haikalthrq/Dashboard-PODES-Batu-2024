@@ -54,7 +54,7 @@ def calculate_kpi_metrics(df: pd.DataFrame, indicator_key: str, indicator_label:
         indicator_label: Human-readable label for the indicator
         
     Returns:
-        Dict: KPI metrics including totals, averages, and top performers
+        Dict: KPI metrics including totals and top performers
     """
     if df.empty or indicator_key not in df.columns:
         return {}
@@ -67,7 +67,6 @@ def calculate_kpi_metrics(df: pd.DataFrame, indicator_key: str, indicator_label:
         # Quantitative indicators
         kpis['type'] = 'quantitative'
         kpis['total'] = int(data_series.sum())
-        kpis['average'] = round(data_series.mean(), 1)
         kpis['median'] = round(data_series.median(), 1)
         kpis['max_value'] = int(data_series.max())
         kpis['min_value'] = int(data_series.min())
@@ -80,10 +79,6 @@ def calculate_kpi_metrics(df: pd.DataFrame, indicator_key: str, indicator_label:
             kpis['top_village_kec'] = top_village['nama_kecamatan']
         else:
             kpis['top_village'] = "Tidak ada"
-            
-        # Villages with non-zero values
-        kpis['villages_with_facility'] = len(df[data_series > 0])
-        kpis['villages_without_facility'] = len(df[data_series == 0])
         
     else:
         # Qualitative indicators
@@ -131,7 +126,11 @@ def filter_and_analyze_data(df: pd.DataFrame,
     
     # Apply desa filter if any selected
     if selected_desa:
-        filtered_df = filtered_df[filtered_df['nama_desa'].isin(selected_desa)]
+        # Handle both string and list cases
+        if isinstance(selected_desa, str):
+            filtered_df = filtered_df[filtered_df['nama_desa'] == selected_desa]
+        elif isinstance(selected_desa, list) and len(selected_desa) > 0:
+            filtered_df = filtered_df[filtered_df['nama_desa'].isin(selected_desa)]
     
     # Handle "Semua" case for indicators
     if selected_indicator == "Semua":
