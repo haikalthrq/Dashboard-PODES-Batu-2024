@@ -642,6 +642,15 @@ def display_all_indicators_overview(df, category, category_indicators):
         for key, label in qualitative_indicators.items():
             with st.expander(f"🎯 {label}"):
                 create_enhanced_qualitative_visualization(df, key, label)
+    
+    # Add village comparison section for all indicators view
+    st.markdown("---")
+    st.markdown("### 🔍 **Perbandingan Antar Desa**")
+    st.info("💡 Fitur ini memungkinkan Anda membandingkan beberapa desa berdasarkan indikator dalam kategori ini.")
+    
+    # Get all indicator keys for this category
+    all_indicator_keys = list(indicators.keys())
+    display_village_comparison(df, all_indicator_keys, category_indicators)
 
 
 def display_single_indicator_analysis(df, indicator_key, indicator_label, category_indicators):
