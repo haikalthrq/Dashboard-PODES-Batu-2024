@@ -9,7 +9,19 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 def create_enhanced_quantitative_visualization(df, column, title):
-    """Create enhanced visualizations with si        with perf_cols[0    with col2:   most_common = value_counts.index[0]
+    """Create enhanced visualizations with si        with        with perf_col    with col2:      most_common = value_counts.index[0]
+            st.metric("👑 Kategori Dominan", f"{most_common}")
+        
+        with perf_cols[1]:
+            most_common_count = value_counts.iloc[0]
+            most_common_pct = (most_common_count / total_valid * 100).round(1)
+            st.metric("📈 Persentase Dominan", f"{most_common_pct}%")
+        
+        with perf_cols[2]:
+            st.metric("🎯 Total Kategori", len(value_counts))
+            
+        with perf_cols[3]:
+            st.metric("🏘️ Total Desa", total_desa)ls[0    with col2:   most_common = value_counts.index[0]
             st.metric("👑 Kategori Dominan", f"{most_common}")
         
         with perf_cols[1]:
@@ -103,8 +115,8 @@ def create_enhanced_quantitative_visualization(df, column, title):
         st.markdown("#### 📊 **Statistik Kunci & Ringkasan Data**")
         stats = clean_df[column].describe()
         
-        # Single row with 5 columns for compact display
-        stat_cols = st.columns(5)
+        # Single row with 4 columns for compact display
+        stat_cols = st.columns(4)
         
         with stat_cols[0]:
             st.metric("🎯 Tertinggi", f"{int(stats['max'])}")
@@ -118,9 +130,6 @@ def create_enhanced_quantitative_visualization(df, column, title):
             
         with stat_cols[3]:
             st.metric("🏘️ Total Desa", total_desa)
-        
-        with stat_cols[4]:
-            st.metric("📊 Desa dengan Data", len(clean_df))
     
     with col2:
         st.markdown("#### 📈 **Analisis Distribusi**")
@@ -355,8 +364,8 @@ def create_enhanced_qualitative_visualization(df, column, title):
         # Get total desa from original dataframe
         total_desa = len(df)
         
-        # First row - performance metrics (2 columns)
-        perf_cols = st.columns(5)
+        # Single row with 4 columns for compact display
+        perf_cols = st.columns(4)
         with perf_cols[0]:
             most_common = value_counts.index[0]
             most_common_count = value_counts.iloc[0]
