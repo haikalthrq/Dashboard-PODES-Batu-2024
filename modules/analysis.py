@@ -41,7 +41,7 @@ def get_updated_category_indicators() -> Dict[str, Dict[str, str]]:
             "status_dilakukan_pemilahan_sampah": "Pemilahan Sampah",
             "kebiasaan_pemilahan_sampah": "Kebiasaan Pemilahan Sampah",
             "warga_terlibat_olah_sampah": "Partisipasi Warga Pengolahan Sampah",
-            "status_buang_sampah_dibakar": "Status Pembakaran Sampah",
+            "kebiasaan_bakar_lahan": "Kebiasaan Bakar Lahan",
             "sumber_pencemaran_air_dari_pabrik": "Pencemaran Air dari Pabrik",
             "sumber_pencemaran_air_dari_rumah": "Pencemaran Air dari Rumah Tangga",
             "sumber_pencemaran_air_dari_lainnya": "Pencemaran Air dari Sumber Lain",
