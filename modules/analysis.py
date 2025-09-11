@@ -28,7 +28,9 @@ def get_updated_category_indicators() -> Dict[str, Dict[str, str]]:
         },
         "Infrastruktur & Konektivitas": {
             "kekuatan_sinyal": "Kualitas Sinyal Internet",
-            "jenis_sinyal_internet": "Jenis Sinyal Internet"
+            "jenis_sinyal_internet": "Jenis Sinyal Internet",
+            "status_penerangan_jalan_surya": "Penerangan Jalan Tenaga Surya",
+            "status_penerangan_jalan_utama": "Penerangan Jalan Utama"
         },
         "Lingkungan & Kebencanaan": {
             "status_peringatan_dini": "Sistem Peringatan Dini",
@@ -39,7 +41,11 @@ def get_updated_category_indicators() -> Dict[str, Dict[str, str]]:
             "status_dilakukan_pemilahan_sampah": "Pemilahan Sampah",
             "kebiasaan_pemilahan_sampah": "Kebiasaan Pemilahan Sampah",
             "warga_terlibat_olah_sampah": "Partisipasi Warga Pengolahan Sampah",
-            "status_buang_sampah_dibakar": "Status Pembakaran Sampah"
+            "status_buang_sampah_dibakar": "Status Pembakaran Sampah",
+            "sumber_pencemaran_air_dari_pabrik": "Pencemaran Air dari Pabrik",
+            "sumber_pencemaran_air_dari_rumah": "Pencemaran Air dari Rumah Tangga",
+            "sumber_pencemaran_air_dari_lainnya": "Pencemaran Air dari Sumber Lain",
+            "lokasi_sumber_pencemaran_air": "Lokasi Sumber Pencemaran Air"
         }
     }
 
