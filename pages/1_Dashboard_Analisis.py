@@ -8,6 +8,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
+import io
+from datetime import datetime
 from modules.data_loader import load_podes_data, get_kecamatan_list, get_desa_list
 from modules.analysis import (
     get_updated_category_indicators,
@@ -24,6 +26,81 @@ st.set_page_config(
     page_icon="📊",
     layout="wide"
 )
+
+def create_excel_download_button(df: pd.DataFrame, filename_prefix: str, button_label: str = "📥 Download Excel"):
+    """
+    Create a clean download button for Excel file
+    
+    Args:
+        df: DataFrame to download
+        filename_prefix: Prefix for the filename
+        button_label: Label for the download button
+    """
+    if df.empty:
+        return
+    
+    # Create Excel file in memory
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Data')
+        
+        # Auto-adjust column widths
+        worksheet = writer.sheets['Data']
+        for column in worksheet.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 50)
+            worksheet.column_dimensions[column_letter].width = adjusted_width
+    
+    # Generate filename with timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{filename_prefix}_{timestamp}.xlsx"
+    
+    # Enhanced button styling only
+    st.markdown("""
+    <style>
+    .stDownloadButton > button {
+        background-color: #4CAF50 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 20px !important;
+        font-weight: bold !important;
+        font-size: 16px !important;
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3) !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+    }
+    .stDownloadButton > button:hover {
+        background-color: #45a049 !important;
+        box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4) !important;
+        transform: translateY(-2px) !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Create clean download button
+    st.download_button(
+        label=f"📥 {button_label}",
+        data=output.getvalue(),
+        file_name=filename,
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        help=f"Download {len(df)} baris data dalam format Excel (.xlsx)",
+        use_container_width=True
+    )
+    
+    # Add simple info about the download
+    st.markdown(f"""
+    <div style="background-color: #f0f2f6; padding: 8px; border-radius: 5px; margin-top: 8px; font-size: 12px; text-align: center;">
+    📊 <strong>{len(df)} baris data</strong> • 📁 <strong>{filename}</strong> • 💾 <strong>Format: Excel (.xlsx)</strong>
+    </div>
+    """, unsafe_allow_html=True)
 
 def create_sidebar_controls(df: pd.DataFrame, category_indicators: dict):
     """Create sidebar controls with all filters and reset button"""
@@ -248,6 +325,17 @@ def display_all_indicators_table(filtered_df: pd.DataFrame, selected_category: s
         hide_index=True
     )
     
+    # Add dedicated Excel download section
+    st.markdown("---")  # Separator line
+    filename_parts = ["Semua_Indikator", selected_category.replace(" & ", "_").replace(" ", "_")]
+    filename_prefix = "_".join(filename_parts)
+    
+    create_excel_download_button(
+        display_df, 
+        filename_prefix, 
+        "Download Data Semua Indikator"
+    )
+    
     # Show summary statistics
     st.subheader("📊 Ringkasan Statistik")
     numeric_cols = []
@@ -321,6 +409,21 @@ def display_ranking_table(filtered_df: pd.DataFrame, selected_indicator: str, in
         hide_index=True
     )
     
+    # Add dedicated Excel download section
+    st.markdown("---")  # Separator line
+    if selected_indicator == "Semua":
+        filename_prefix = "Ranking_Semua_Indikator"
+        button_label = "Download Data Ranking Semua"
+    else:
+        filename_prefix = f"Ranking_{selected_indicator.replace('_', ' ').title()}"
+        button_label = f"Download Data Ranking {indicator_label}"
+    
+    create_excel_download_button(
+        display_df, 
+        filename_prefix, 
+        button_label
+    )
+    
     # Show additional ranking info for numeric data (only for specific indicators)
     if selected_indicator != "Semua" and pd.api.types.is_numeric_dtype(filtered_df[selected_indicator]):
         st.subheader("🏆 Top 5 Peringkat")
@@ -333,6 +436,15 @@ def display_ranking_table(filtered_df: pd.DataFrame, selected_indicator: str, in
                 selected_indicator: indicator_label
             })
             st.dataframe(top_5_display, hide_index=True, width="stretch")
+            
+            # Add dedicated download section for Top 5
+            st.markdown("---")  # Separator line
+            filename_prefix = f"Top_5_{selected_indicator.replace('_', ' ').title()}"
+            create_excel_download_button(
+                top_5_display, 
+                filename_prefix, 
+                f"Download Top 5 {indicator_label}"
+            )
 
 
 def display_village_comparison(filtered_df: pd.DataFrame, 
@@ -474,6 +586,15 @@ def display_village_comparison(filtered_df: pd.DataFrame,
                 if summary_data:
                     summary_df = pd.DataFrame(list(summary_data.values()))
                     st.dataframe(summary_df, use_container_width=True)
+                    
+                    # Add dedicated download section for comparison table
+                    st.markdown("---")  # Separator line
+                    filename_prefix = "Perbandingan_Desa_Kuantitatif"
+                    create_excel_download_button(
+                        summary_df, 
+                        filename_prefix, 
+                        "Download Perbandingan Kuantitatif"
+                    )
     
     # Display qualitative indicators
     if qualitative_indicators:
@@ -519,6 +640,15 @@ def display_village_comparison(filtered_df: pd.DataFrame,
                     
                     # Show simple comparison table
                     st.dataframe(indicator_df, use_container_width=True, height=200)
+                    
+                    # Add dedicated download section for qualitative comparison
+                    st.markdown("---")  # Separator line
+                    filename_prefix = f"Perbandingan_{indicator_key.replace('_', ' ').title()}"
+                    create_excel_download_button(
+                        indicator_df, 
+                        filename_prefix, 
+                        f"Download Data {available_indicators[indicator_key]}"
+                    )
                 else:
                     st.info("Tidak ada data tersedia untuk indikator ini.")
     
@@ -527,6 +657,15 @@ def display_village_comparison(filtered_df: pd.DataFrame,
         summary_comparison = comparison_df[['village_label'] + selected_indicator_keys].copy()
         summary_comparison.columns = ['Desa'] + [available_indicators[key] for key in selected_indicator_keys]
         st.dataframe(summary_comparison, use_container_width=True)
+        
+        # Add dedicated download section for complete comparison summary
+        st.markdown("---")  # Separator line
+        filename_prefix = "Ringkasan_Lengkap_Perbandingan_Desa"
+        create_excel_download_button(
+            summary_comparison, 
+            filename_prefix, 
+            "Download Ringkasan Lengkap Perbandingan"
+        )
 
 
 def get_indicator_label(indicator_key: str, category_indicators: dict) -> str:
@@ -796,6 +935,16 @@ def create_quantitative_visualization(df, column, title):
         display_df = display_df[['Peringkat', 'nama_desa', 'nama_kecamatan', column]]
         display_df.columns = ['Peringkat', 'Desa', 'Kecamatan', title]
         st.dataframe(display_df, use_container_width=True, height=400)
+        
+        # Add download button for detailed ranking
+        col1, col2 = st.columns([1, 4])
+        with col1:
+            filename_prefix = f"Ranking_Detail_{title.replace(' ', '_')}"
+            create_excel_download_button(
+                display_df, 
+                filename_prefix, 
+                "📥 Download Ranking Detail"
+            )
 
 
 def create_qualitative_visualization(df, column, title):

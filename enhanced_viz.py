@@ -7,6 +7,83 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import io
+from datetime import datetime
+
+def create_excel_download_button_viz(df: pd.DataFrame, filename_prefix: str, button_label: str = "📥 Download Excel"):
+    """
+    Create a clean download button for Excel file (for enhanced_viz module)
+    
+    Args:
+        df: DataFrame to download
+        filename_prefix: Prefix for the filename
+        button_label: Label for the download button
+    """
+    if df.empty:
+        return
+    
+    # Create Excel file in memory
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Data')
+        
+        # Auto-adjust column widths
+        worksheet = writer.sheets['Data']
+        for column in worksheet.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 50)
+            worksheet.column_dimensions[column_letter].width = adjusted_width
+    
+    # Generate filename with timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{filename_prefix}_{timestamp}.xlsx"
+    
+    # Enhanced button styling only
+    st.markdown("""
+    <style>
+    .stDownloadButton > button {
+        background-color: #4CAF50 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 20px !important;
+        font-weight: bold !important;
+        font-size: 16px !important;
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3) !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+    }
+    .stDownloadButton > button:hover {
+        background-color: #45a049 !important;
+        box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4) !important;
+        transform: translateY(-2px) !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Create clean download button
+    st.download_button(
+        label=f"📥 {button_label}",
+        data=output.getvalue(),
+        file_name=filename,
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        help=f"Download {len(df)} baris data dalam format Excel (.xlsx)",
+        use_container_width=True
+    )
+    
+    # Add simple info about the download
+    st.markdown(f"""
+    <div style="background-color: #f0f2f6; padding: 8px; border-radius: 5px; margin-top: 8px; font-size: 12px; text-align: center;">
+    📊 <strong>{len(df)} baris data</strong> • 📁 <strong>{filename}</strong> • 💾 <strong>Format: Excel (.xlsx)</strong>
+    </div>
+    """, unsafe_allow_html=True)
 
 def create_enhanced_quantitative_visualization(df, column, title):
     """Create enhanced visualizations with si        with        with perf_col    with col2:      most_common = value_counts.index[0]
@@ -256,6 +333,15 @@ def create_enhanced_quantitative_visualization(df, column, title):
             column_config=column_config
         )
         
+        # Add dedicated download section
+        st.markdown("---")  # Separator line
+        filename_prefix = f"Ranking_Lengkap_{title.replace(' ', '_')}"
+        create_excel_download_button_viz(
+            table_df, 
+            filename_prefix, 
+            f"Download Ranking Lengkap {title}"
+        )
+        
         # Add insights
         st.markdown("**💡 Insights:**")
         top_performer = table_df.iloc[0]
@@ -474,6 +560,18 @@ def create_enhanced_qualitative_visualization(df, column, title):
                     column_config=qual_column_config
                 )
                 st.write("")  # Space between categories
+        
+        # Add dedicated download section for all qualitative data
+        st.markdown("---")  # Separator line
+        complete_qual_df = df[['nama_desa', 'nama_kecamatan', column]].copy()
+        complete_qual_df.columns = ['Desa', 'Kecamatan', title]
+        
+        filename_prefix = f"Data_Detail_{title.replace(' ', '_')}"
+        create_excel_download_button_viz(
+            complete_qual_df, 
+            filename_prefix, 
+            f"Download Data Detail {title}"
+        )
         
         # Summary by kecamatan
         if 'nama_kecamatan' in df.columns:
